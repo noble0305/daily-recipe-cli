@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>带饭食谱 · 每日推荐</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f7f5f0; color: #2b2a26; line-height: 1.6;
+  }
+  header {
+    background: #2b2a26; color: #f7f5f0; padding: 18px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  header h1 { margin: 0; font-size: 20px; font-weight: 600; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px; }
+  section { background: #fff; border: 1px solid #e3dfd5; border-radius: 10px;
+    padding: 20px 24px; margin-bottom: 20px; }
+  section h2 { margin: 0 0 12px; font-size: 17px; }
+  .btn {
+    border: 1px solid #2b2a26; background: #2b2a26; color: #fff;
+    padding: 7px 16px; border-radius: 6px; cursor: pointer; font-size: 14px;
+  }
+  .btn.secondary { background: #fff; color: #2b2a26; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .status { margin: 10px 0; padding: 10px 12px; border-radius: 6px;
+    background: #f2efe7; border: 1px solid #e3dfd5; }
+  .status.decided { background: #e8f2e4; border-color: #bcd8b0; }
+  .error { color: #b3261e; background: #fdecec; border: 1px solid #f5c6c0;
+    padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+  .card { border: 1px solid #e3dfd5; border-radius: 8px; padding: 12px 14px;
+    margin: 8px 0; display: flex; justify-content: space-between; align-items: center; }
+  .card .meta { color: #77725f; font-size: 13px; }
+  .tag { display: inline-block; background: #f2efe7; border-radius: 4px;
+    padding: 0 6px; margin-right: 4px; font-size: 12px; }
+  .row { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+  .row input, .row select { flex: 1; padding: 6px 8px; border: 1px solid #cfc9b8;
+    border-radius: 6px; font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #ece8dd; }
+  .muted { color: #77725f; font-size: 13px; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #171614; color: #e8e4d8; }
+    section, .card { background: #211f1c; border-color: #38352e; }
+    .status { background: #2a2823; border-color: #3a372f; }
+    .status.decided { background: #20301c; border-color: #33502b; }
+    .tag { background: #2a2823; }
+    .btn.secondary { background: #211f1c; color: #e8e4d8; }
+    .row input, .row select { background: #2a2823; color: #e8e4d8; border-color: #454139; }
+    th, td { border-color: #38352e; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🍱 带饭食谱 · 每日推荐</h1>
+  <span class="muted" id="today-label"></span>
+</header>
+<main>
+  <!-- 今日 -->
+  <section id="today-section">
+    <h2>今日</h2>
+    <div id="today-status" class="status">加载中…</div>
+    <div id="today-candidates"></div>
+    <div class="row">
+      <button id="btn-recommend" class="btn">今日推荐</button>
+      <button id="btn-force" class="btn secondary" style="display:none">重新推荐（--force）</button>
+    </div>
+  </section>
+
+  <!-- 食谱库 -->
+  <section id="recipes-section">
+    <h2>食谱库</h2>
+    <div class="row">
+      <input id="tag-filter" placeholder="按标签筛选（如 荤 快手，空格分隔）">
+      <button id="btn-filter" class="btn secondary">筛选</button>
+    </div>
+    <div id="recipes-list"></div>
+    <h3 style="margin:14px 0 8px;font-size:15px">添加食谱</h3>
+    <div class="row"><input id="add-name" placeholder="菜名"></div>
+    <div class="row"><input id="add-ingredients" placeholder="主要食材（逗号分隔）"></div>
+    <div class="row"><input id="add-tags" placeholder="标签（空格分隔，如 荤 快手）"></div>
+    <div class="row"><input id="add-note" placeholder="一句话做法（可选）"></div>
+    <button id="btn-add" class="btn">添加</button>
+  </section>
+
+  <!-- 周计划 -->
+  <section id="week-section">
+    <h2>周计划</h2>
+    <div class="row">
+      <button id="btn-week-preview" class="btn">生成下周计划</button>
+      <button id="btn-week-confirm" class="btn secondary" style="display:none">确认写入</button>
+      <button id="btn-week-cancel" class="btn secondary" style="display:none">取消</button>
+    </div>
+    <div id="week-list"></div>
+  </section>
+
+  <!-- 历史 -->
+  <section id="history-section">
+    <h2>历史</h2>
+    <div class="row">
+      <span class="muted">最近</span>
+      <select id="history-days">
+        <option value="7">7 天</option>
+        <option value="30" selected>30 天</option>
+        <option value="90">90 天</option>
+      </select>
+      <span class="muted">天</span>
+    </div>
+    <div id="history-list"></div>
+  </section>
+
+  <div id="error-box" class="error" style="display:none"></div>
+</main>
+
+<script>
+"use strict";
+// 渲染层：只做展示与表单，所有业务逻辑在服务端 Python 核心模块。
+const $ = (id) => document.getElementById(id);
+
+async function api(method, path, body) {
+  const opt = { method, headers: {} };
+  if (body !== undefined) { opt.headers["Content-Type"] = "application/json"; opt.body = JSON.stringify(body); }
+  const resp = await fetch(path, opt);
+  const json = await resp.json().catch(() => ({ ok: false, error: "响应解析失败" }));
+  if (!resp.ok || !json.ok) { showError(json.error || "请求失败"); return null; }
+  hideError();
+  return json.data;
+}
+function showError(msg) { const el = $("error-box"); el.textContent = msg; el.style.display = "block"; }
+function hideError() { $("error-box").style.display = "none"; }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
+async function loadState() {
+  const d = await api("GET", "/api/state");
+  if (!d) return;
+  $("today-label").textContent = "今天是 " + new Date().toLocaleDateString("zh-CN", { month: "long", day: "numeric", weekday: "long" });
+  renderToday(d.today);
+  renderRecipes(d.recipes);
+  loadHistory();
+  loadWeekClean();
+}
+function renderToday(t) {
+  const el = $("today-status");
+  if (t.decided) {
+    el.className = "status decided";
+    el.textContent = "今日已确定：" + t.decidedRecipe;
+    $("btn-force").style.display = "";
+  } else {
+    el.className = "status";
+    el.textContent = "今日未确定";
+    $("btn-force").style.display = "none";
+  }
+  $("today-candidates").innerHTML = "";
+  if (t.candidates && t.candidates.length) {
+    const hint = document.createElement("div");
+    hint.className = "muted"; hint.style.marginBottom = "8px";
+    hint.textContent = "推荐理由：" + t.reason;
+    $("today-candidates").appendChild(hint);
+    t.candidates.forEach((r, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const info = document.createElement("div");
+      info.innerHTML = "<b>" + esc(r.name) + "</b> <span class='meta'>" +
+        esc(r.ingredients.join("、")) + "</span><br>" +
+        r.tags.map(t => "<span class='tag'>" + esc(t) + "</span>").join("");
+      const btn = document.createElement("button");
+      btn.className = "btn"; btn.textContent = "选它";
+      btn.onclick = () => confirmToday(i + 1);
+      card.appendChild(info); card.appendChild(btn);
+      $("today-candidates").appendChild(card);
+    });
+  }
+}
+
+async function recommendToday() {
+  $("btn-recommend").disabled = true;
+  const d = await api("POST", "/api/today", { action: "recommend" });
+  $("btn-recommend").disabled = false;
+  if (!d) return;
+  if (d.decided) { renderToday(d); return; }
+  renderToday(d);
+}
+async function forceRecommend() {
+  $("btn-force").disabled = true;
+  const d = await api("POST", "/api/today", { action: "force" });
+  $("btn-force").disabled = false;
+  if (d) renderToday(d);
+}
+async function confirmToday(choice) {
+  const d = await api("POST", "/api/today", { action: "confirm", choice });
+  if (d) { renderToday({ decided: true, decidedRecipe: d.decidedRecipe, candidates: null }); loadHistory(); }
+}
+$("btn-recommend").onclick = recommendToday;
+$("btn-force").onclick = forceRecommend;
+
+function renderRecipes(list) {
+  const el = $("recipes-list"); el.innerHTML = "";
+  if (!list.length) { el.innerHTML = "<div class='muted'>食谱库为空，先添加一道菜吧。</div>"; return; }
+  const tags = ($("tag-filter").value || "").trim().split(/\s+/).filter(Boolean);
+  const shown = tags.length ? list.filter(r => tags.every(t => r.tags.includes(t))) : list;
+  if (!shown.length) { el.innerHTML = "<div class='muted'>无匹配标签的食谱。</div>"; return; }
+  shown.forEach(r => {
+    const card = document.createElement("div"); card.className = "card";
+    const info = document.createElement("div");
+    info.innerHTML = "<b>" + esc(r.name) + "</b> " + r.tags.map(t => "<span class='tag'>" + esc(t) + "</span>").join("") +
+      "<div class='meta'>" + esc(r.ingredients.join("、")) + (r.note ? "；" + esc(r.note) : "") + "</div>";
+    const btn = document.createElement("button");
+    btn.className = "btn secondary"; btn.textContent = "删除";
+    btn.onclick = async () => {
+      if (!confirm("删除「" + r.name + "」？历史记录不受影响。")) return;
+      const d = await api("POST", "/api/remove", { name: r.name });
+      if (d) loadState();
+    };
+    card.appendChild(info); card.appendChild(btn);
+    el.appendChild(card);
+  });
+}
+$("btn-filter").onclick = () => {
+  const d = api("GET", "/api/state"); // 重新拉取后按新筛选渲染
+  d.then(x => x && renderRecipes(x.recipes));
+};
+async function addRecipe() {
+  const name = $("add-name").value.trim();
+  const ingredients = $("add-ingredients").value.split(/[,，]/).map(s => s.trim()).filter(Boolean);
+  const tags = $("add-tags").value.trim().split(/\s+/).filter(Boolean);
+  if (!name || !ingredients.length || !tags.length) { showError("菜名、食材、标签均必填"); return; }
+  const d = await api("POST", "/api/add", { name, ingredients, tags, note: $("add-note").value.trim() });
+  if (d) {
+    ["add-name", "add-ingredients", "add-tags", "add-note"].forEach(id => $(id).value = "");
+    loadState();
+  }
+}
+$("btn-add").onclick = addRecipe;
+
+let weekPreview = null;
+function loadWeekClean() { weekPreview = null; $("week-list").innerHTML = ""; $("btn-week-confirm").style.display = "none"; $("btn-week-cancel").style.display = "none"; }
+async function weekPreviewGen() {
+  const d = await api("POST", "/api/week", { action: "preview" });
+  if (!d) return;
+  weekPreview = d;
+  const el = $("week-list"); el.innerHTML = "";
+  const hint = d.relaxed ? "（已放宽去重窗口）" : "";
+  el.innerHTML = "<div class='muted' style='margin-bottom:8px'>下周带饭计划（5 个工作日）" + hint + "</div>";
+  d.days.forEach(item => {
+    const row = document.createElement("div"); row.className = "card";
+    row.innerHTML = "<div><b>" + esc(item.date) + "</b> <span class='muted'>" + weekdayName(item.date) + "</span></div>" +
+      "<div>" + (item.recipe ? esc(item.recipe) : "<span class='muted'>无可用菜</span>") + "</div>";
+    el.appendChild(row);
+  });
+  $("btn-week-confirm").style.display = "";
+  $("btn-week-cancel").style.display = "";
+}
+function weekdayName(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return ["周日","周一","周二","周三","周四","周五","周六"][d.getDay()];
+}
+async function weekConfirm() {
+  const d = await api("POST", "/api/week", { action: "confirm" });
+  if (d) { loadWeekClean(); loadHistory(); loadState(); }
+}
+$("btn-week-preview").onclick = weekPreviewGen;
+$("btn-week-confirm").onclick = weekConfirm;
+$("btn-week-cancel").onclick = loadWeekClean;
+
+async function loadHistory() {
+  const days = $("history-days").value;
+  const d = await api("GET", "/api/history?days=" + days);
+  if (!d) return;
+  const el = $("history-list"); el.innerHTML = "";
+  if (!d.records.length) { el.innerHTML = "<div class='muted'>暂无历史记录</div>"; return; }
+  const t = document.createElement("table");
+  t.innerHTML = "<tr><th>日期</th><th>菜名</th><th>来源</th></tr>" + d.records.map(e =>
+    "<tr><td>" + esc(e.date) + "</td><td>" + esc(e.recipe) + "</td><td>" +
+    (e.source === "week" ? "周计划" : "单日推荐") + "</td></tr>").join("");
+  el.appendChild(t);
+}
+$("history-days").onchange = loadHistory;
+
+// 页面关闭时通知服务退出（用完即停）
+window.addEventListener("pagehide", () => {
+  try { navigator.sendBeacon("/api/bye"); } catch (e) {}
+});
+
+loadState();
+</script>
+</body>
+</html>

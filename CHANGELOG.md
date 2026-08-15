@@ -10,3 +10,4 @@
 | 6 | 2026-08-15 | 新增 Spec Kit 开发工作流团队实践指南（docs/spec-kit-workflow.md + 分享用 HTML 版 + 侧边栏导航版 + bento 演示 deck） | 文档 |
 | 7 | 2026-08-15 | 新增 PM↔开发协作契约 SOP（docs/pm-dev-contract.md + PM 交付物模板 + 两份导航版 HTML） | 文档 |
 | 8 | 2026-08-15 | 新增完整 PRD 规格说明书模板与示例（docs/templates/prd-template.md + prd-example.md + 两份导航版 HTML） | 文档 |
+| 9 | 2026-08-15 | 新增页面化访问：`recipe serve` 本地一次性服务，浏览器完成今日推荐/食谱库/周计划/历史全部操作（复用核心逻辑，仅标准库，关闭即退出） | 页面化访问 |

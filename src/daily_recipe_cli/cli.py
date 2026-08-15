@@ -52,6 +52,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_history = sub.add_parser("history", help="查看吃过的历史")
     p_history.add_argument("--days", type=int, default=30, metavar="N", help="显示最近 N 天（默认 30）")
 
+    p_serve = sub.add_parser("serve", help="打开页面化访问界面（本地一次性服务，浏览器关闭即退出）")
+    p_serve.add_argument("--no-browser", action="store_true", help="不自动打开浏览器（仅打印地址）")
+
     return parser
 
 
@@ -189,6 +192,20 @@ def _print_recipe(index: int, r: dict) -> None:
     print(f"   食材：{'、'.join(r['ingredients'])}" + (f"；做法：{r['note']}" if r.get("note") else ""))
 
 
+def _cmd_serve(args: argparse.Namespace) -> int:
+    """启动页面化访问服务（薄层：生命周期逻辑在 server.py）。"""
+    from daily_recipe_cli import server
+
+    httpd = server.serve(open_browser=not args.no_browser)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        httpd.server_close()
+    return 0
+
+
 _HANDLERS = {
     "today": _cmd_today,
     "week": _cmd_week,
@@ -196,6 +213,7 @@ _HANDLERS = {
     "add": _cmd_add,
     "remove": _cmd_remove,
     "history": _cmd_history,
+    "serve": _cmd_serve,
 }
 
 
