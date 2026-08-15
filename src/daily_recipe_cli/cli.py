@@ -10,7 +10,7 @@ import argparse
 import sys
 from datetime import date, timedelta
 
-from daily_recipe_cli import history, recipes as recipes_mod, recommend, storage
+from daily_recipe_cli import history, recipes as recipes_mod, recommend, shopping, storage
 from daily_recipe_cli.storage import DataError
 
 _WEEKDAY_NAMES = ["周一", "周二", "周三", "周四", "周五"]
@@ -54,6 +54,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_serve = sub.add_parser("serve", help="打开页面化访问界面（本地一次性服务，浏览器关闭即退出）")
     p_serve.add_argument("--no-browser", action="store_true", help="不自动打开浏览器（仅打印地址）")
+
+    p_shopping = sub.add_parser("shopping-list", help="生成未来 N 天已安排菜的购物清单")
+    p_shopping.add_argument("--days", type=int, default=7, metavar="N", help="聚合窗口天数（默认 7，含今日）")
+    p_shopping.add_argument("--today", action="store_true", help="仅聚合今日已确定的菜")
+    p_shopping.add_argument("--no-merge", action="store_true", help="不合并重复食材（同一食材按来源分别列出）")
 
     return parser
 
@@ -206,6 +211,34 @@ def _cmd_serve(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_shopping_list(args: argparse.Namespace) -> int:
+    days = args.days
+    if args.today:
+        days = 1
+    if days < 1:
+        raise DataError(f"days 必须是正整数，当前为 {days}")
+    result = shopping.build_list(
+        storage.load_recipes(),
+        storage.load_history(),
+        date.today(),
+        days=days,
+        merge=not args.no_merge,
+    )
+
+    if result["empty"]:
+        print("未来 N 天暂无已安排的菜。先用 recipe today 确定今天的菜，或 recipe week 规划下周。")
+        return 0
+
+    window_label = "今日" if days == 1 else f"未来 {days} 天"
+    print(f"购物清单（{window_label}，共 {len(result['items'])} 项）：")
+    for item in result["items"]:
+        print(f"  {item['ingredient']} ← {'、'.join(item['sources'])}")
+
+    if result["skippedRecipes"]:
+        print(f"已跳过（不在食谱库）：{'、'.join(result['skippedRecipes'])}")
+    return 0
+
+
 _HANDLERS = {
     "today": _cmd_today,
     "week": _cmd_week,
@@ -214,6 +247,7 @@ _HANDLERS = {
     "remove": _cmd_remove,
     "history": _cmd_history,
     "serve": _cmd_serve,
+    "shopping-list": _cmd_shopping_list,
 }
 
 

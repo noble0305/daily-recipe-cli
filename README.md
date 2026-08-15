@@ -46,6 +46,22 @@ uv run recipe remove "香菇滑鸡"               # 删除（历史记录不受�
 uv run recipe history                         # 查看吃过的历史
 ```
 
+## 购物清单
+
+已确定今天带什么饭（或规划了下周）后，一键生成采购清单：
+
+```bash
+uv run recipe shopping-list              # 聚合未来 7 天已安排菜的食材（去重+标注来源）
+uv run recipe shopping-list --today      # 只看今日已确定那道菜的采购项
+uv run recipe shopping-list --days 3     # 自定义窗口：未来 3 天
+uv run recipe shopping-list --no-merge   # 不合并重复食材（同一食材按来源分别列出）
+```
+
+- 聚合范围：今日起未来 `--days` 天（默认 7，含今日）内已安排的菜（今日 `today` 记录 + 未来 `week` 计划）；
+- 输出按食材名排序，每项标注来源菜（如 `番茄 ← 番茄牛腩、番茄炒蛋`）；
+- 若某道已安排菜不在食谱库中，会提示「已跳过」并列出该菜，不影响其他菜；
+- 页面化访问（`recipe serve`）的「购物清单」区域提供同样功能，含「仅今日」与「合并/不合并」切换。
+
 ## 偏好与高级参数
 
 ```bash
@@ -59,7 +75,7 @@ uv run recipe week --yes                      # 跳过确认直接写入
 
 ## 页面化访问
 
-不想敲命令？可以用浏览器操作全部功能（今日推荐 / 食谱库 / 周计划 / 历史）：
+不想敲命令？可以用浏览器操作全部功能（今日推荐 / 食谱库 / 周计划 / 历史 / 购物清单）：
 
 ```bash
 uv run recipe serve        # 启动本地页面并自动打开浏览器

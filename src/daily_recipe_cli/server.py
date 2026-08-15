@@ -20,7 +20,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 from urllib.parse import urlparse, parse_qs
 
-from daily_recipe_cli import history, recipes, recommend, storage
+from daily_recipe_cli import history, recipes, recommend, shopping, storage
 from daily_recipe_cli.storage import DataError
 
 # 空闲超时（秒）：超过后自动退出，防止遗留进程
@@ -89,6 +89,8 @@ class _Handler(BaseHTTPRequestHandler):
                 self._api_state()
             elif parsed.path == "/api/history":
                 self._api_history(parse_qs(parsed.query))
+            elif parsed.path == "/api/shopping-list":
+                self._api_shopping_list(parse_qs(parsed.query))
             else:
                 self._send_error("未知接口", 404)
         except DataError as e:
@@ -310,6 +312,25 @@ class _Handler(BaseHTTPRequestHandler):
     # ------------------------------------------------------------------
     # 历史（US4）与生命周期
     # ------------------------------------------------------------------
+
+    def _api_shopping_list(self, query: dict) -> None:
+        try:
+            days = int(query.get("days", ["7"])[0])
+        except ValueError:
+            raise DataError("days 必须是正整数")
+        if days < 1:
+            raise DataError(f"days 必须是正整数，当前为 {days}")
+        merge_raw = query.get("merge", ["true"])[0].lower()
+        if merge_raw not in ("true", "false"):
+            raise DataError("merge 必须是 true 或 false")
+        result = shopping.build_list(
+            storage.load_recipes(),
+            storage.load_history(),
+            date.today(),
+            days=days,
+            merge=merge_raw == "true",
+        )
+        self._send_ok(result)
 
     def _api_history(self, query: dict) -> None:
         try:
