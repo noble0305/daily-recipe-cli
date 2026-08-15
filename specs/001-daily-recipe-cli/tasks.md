@@ -137,10 +137,10 @@ description: "Task list template for feature implementation"
 
 **Purpose**: 收尾与质量
 
-- [ ] T024 Run `quickstart.md` 全部命令验证（真实 `uv run` 端到端），修正文档与实现不一致
-- [ ] T025 [P] Update `specs/001-daily-recipe-cli/spec.md`：补充 FR（history 命令）并更新 checklists/requirements.md
-- [ ] T026 Write 根目录 `README.md`（安装、常用命令、数据说明）与补全 `CHANGELOG.md`
-- [ ] T027 Run `uv run pytest` 全量通过；`uv run recipe today` 冒烟；提交最终 commit 并推送 GitHub
+- [x] T024 Run `quickstart.md` 全部命令验证（真实 `uv run` 端到端），修正文档与实现不一致
+- [x] T025 [P] Update `specs/001-daily-recipe-cli/spec.md`：补充 FR（history 命令）并更新 checklists/requirements.md
+- [x] T026 Write 根目录 `README.md`（安装、常用命令、数据说明）与补全 `CHANGELOG.md`
+- [x] T027 Run `uv run pytest` 全量通过；`uv run recipe today` 冒烟；提交最终 commit 并推送 GitHub
 
 ---
 
