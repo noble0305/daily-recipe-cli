@@ -62,15 +62,15 @@ description: "Task list template for feature implementation"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T009 [P] [US1] Write `tests/test_recommend.py`：候选生成数量（1~3）、去重窗口（7 天不重复）、种子可复现（同 seed 同结果）、窗口放宽（不足时依次放宽并提示）
-- [ ] T010 [P] [US1] Write `tests/test_history.py`：历史写入/读取、当日已确定判断（FR-012）、`--force` 覆盖当天
+- [x] T009 [P] [US1] Write `tests/test_recommend.py`：候选生成数量（1~3）、去重窗口（7 天不重复）、种子可复现（同 seed 同结果）、窗口放宽（不足时依次放宽并提示）
+- [x] T010 [P] [US1] Write `tests/test_history.py`：历史写入/读取、当日已确定判断（FR-012）、`--force` 覆盖当天
 
 ### Implementation for User Story 1
 
-- [ ] T011 [P] [US1] Implement `src/daily_recipe_cli/history.py`：历史记录读写、按日期判断「今日已确定」、写入时菜名快照
-- [ ] T012 [P] [US1] Implement `src/daily_recipe_cli/recommend.py`：候选生成（标签过滤 + 去重窗口排除 + 日期种子 `random.Random` 打乱取前 N）
-- [ ] T013 [US1] Implement `src/daily_recipe_cli/cli.py` 的 `recipe today` 子命令（argparse）：展示候选、`today <序号>` 确认选择、`--force`/`--days`/`--seed`/`--tags` 参数、候选不足提示
-- [ ] T014 [US1] Wire `__main__.py` + `cli.main()`，保证 `uv run recipe today` 可端到端运行
+- [x] T011 [P] [US1] Implement `src/daily_recipe_cli/history.py`：历史记录读写、按日期判断「今日已确定」、写入时菜名快照
+- [x] T012 [P] [US1] Implement `src/daily_recipe_cli/recommend.py`：候选生成（标签过滤 + 去重窗口排除 + 日期种子 `random.Random` 打乱取前 N）
+- [x] T013 [US1] Implement `src/daily_recipe_cli/cli.py` 的 `recipe today` 子命令（argparse）：展示候选、`today <序号>` 确认选择、`--force`/`--days`/`--seed`/`--tags` 参数、候选不足提示
+- [x] T014 [US1] Wire `__main__.py` + `cli.main()`，保证 `uv run recipe today` 可端到端运行
 
 **Checkpoint**: US1 完整可用（MVP 达成）
 
@@ -84,12 +84,12 @@ description: "Task list template for feature implementation"
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T015 [P] [US2] Write `tests/test_recommend.py` 周规划用例：5 个工作日（周一至周五）、批内去重、与历史去重、天数不足时提示
+- [x] T015 [P] [US2] Write `tests/test_recommend.py` 周规划用例：5 个工作日（周一至周五）、批内去重、与历史去重、天数不足时提示
 
 ### Implementation for User Story 2
 
-- [ ] T016 [US2] Implement `recommend.py` 周规划逻辑：从下一个工作周起算 5 天，批内已选集合去重（research.md 决策 4）
-- [ ] T017 [US2] Implement `cli.py` 的 `recipe week` 子命令：预览 5 天菜单、确认后一次性写入历史（`source="week"`）
+- [x] T016 [US2] Implement `recommend.py` 周规划逻辑：从下一个工作周起算 5 天，批内已选集合去重（research.md 决策 4）
+- [x] T017 [US2] Implement `cli.py` 的 `recipe week` 子命令：预览 5 天菜单、确认后一次性写入历史（`source="week"`）
 
 **Checkpoint**: US1 + US2 均独立可用
 
@@ -103,13 +103,13 @@ description: "Task list template for feature implementation"
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T018 [P] [US3] Write `tests/test_recipes.py`：添加（含重名提示 FR-004）、列表（含标签过滤）、删除（历史快照不受影响）
+- [x] T018 [P] [US3] Write `tests/test_recipes.py`：添加（含重名提示 FR-004）、列表（含标签过滤）、删除（历史快照不受影响）
 
 ### Implementation for User Story 3
 
-- [ ] T019 [P] [US3] Implement `src/daily_recipe_cli/recipes.py`：add/list/remove/按标签过滤/查重（大小写不敏感）
-- [ ] T020 [P] [US3] Implement `cli.py` 的 `recipe add` / `recipe list` / `recipe remove` 子命令（含参数校验与中文提示）
-- [ ] T021 [US3] Implement `cli.py` 的 `recipe history [--days N]` 子命令（research.md 决策 7，FR-002 可见性补充）
+- [x] T019 [P] [US3] Implement `src/daily_recipe_cli/recipes.py`：add/list/remove/按标签过滤/查重（大小写不敏感）
+- [x] T020 [P] [US3] Implement `cli.py` 的 `recipe add` / `recipe list` / `recipe remove` 子命令（含参数校验与中文提示）
+- [x] T021 [US3] Implement `cli.py` 的 `recipe history [--days N]` 子命令（research.md 决策 7，FR-002 可见性补充）
 
 **Checkpoint**: 食谱库管理闭环可用
 
@@ -123,11 +123,11 @@ description: "Task list template for feature implementation"
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T022 [P] [US4] Write `tests/test_recommend.py` 标签过滤用例：单标签、多标签叠加、过滤后不足提示
+- [x] T022 [P] [US4] Write `tests/test_recommend.py` 标签过滤用例：单标签、多标签叠加、过滤后不足提示
 
 ### Implementation for User Story 4
 
-- [ ] T023 [US4] Implement 标签过滤在 `recommend.py` 候选生成的完整接入（过滤条件可叠加，全不满足时提示当前条件下可选菜不足）
+- [x] T023 [US4] Implement 标签过滤在 `recommend.py` 候选生成的完整接入（过滤条件可叠加，全不满足时提示当前条件下可选菜不足）
 
 **Checkpoint**: 全部用户故事独立可用
 
