@@ -82,7 +82,19 @@ def _cmd_today(args: argparse.Namespace) -> int:
         return 0
 
     if not cands:
-        print("可选菜不足：当前条件下没有可用食谱（可先 recipe add 添加新菜）")
+        total = len(storage.load_recipes())
+        if total == 0:
+            print("食谱库为空：请先使用 recipe add 添加菜谱")
+        elif args.tags:
+            print(
+                f"可选菜不足：当前过滤条件下没有可用菜"
+                f"（全库共 {total} 道，可减少 --tags 或 recipe add 添加新菜）"
+            )
+        else:
+            print(
+                "可选菜不足：近期吃过的菜较多，已无可选新菜"
+                "（可 recipe add 添加新菜，或 --days 缩短去重窗口）"
+            )
         return 0
 
     hint = "（已放宽去重窗口，近期吃过的菜也可能出现）" if widened else ""
@@ -117,7 +129,10 @@ def _cmd_week(args: argparse.Namespace) -> int:
         print("食谱库为空或过滤条件下无可用菜，无法生成计划。")
         return 0
     if not args.yes:
-        answer = input("确认写入历史？[y/N] ").strip().lower()
+        try:
+            answer = input("确认写入历史？[y/N] ").strip().lower()
+        except EOFError:
+            answer = ""
         if answer not in ("y", "yes"):
             print("已取消，未写入历史。")
             return 0

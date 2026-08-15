@@ -213,3 +213,12 @@ Task: "T012 src/daily_recipe_cli/recommend.py"
 - 每个逻辑组完成后提交（conventional commits）
 - 验证测试先失败后通过（red-green）
 - 结束前验证 quickstart.md 可完整走通
+
+---
+
+## Phase 8: Convergence
+
+**Purpose**: `/speckit.converge` 核查发现的差距，由 `/speckit.implement` 完成
+
+- [x] T028 修复 `recipe week` 在非交互环境（stdin 关闭）下确认输入抛 EOFError 崩溃，捕获 EOFError 视为取消，per FR-011（partial，HIGH，证据 src/daily_recipe_cli/cli.py:120）
+- [x] T029 增强候选为空时的提示：区分「食谱库为空 / 过滤条件下无可用 / 近期无新菜」，并给出全库数量与调整建议，per US1/AC4 与 US4/AC3（partial，MEDIUM，证据 src/daily_recipe_cli/cli.py _cmd_today）
