@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Spec Kit 开发工作流团队实践指南（SOP）</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/Users/wangzhi/.agents/skills/huashu-md-html/templates/report/theme.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Spec Kit 开发工作流团队实践指南（SOP）</h1>
+</header>
+<blockquote>
+<p>本文档是团队统一采用 <strong>Spec Kit 开发工作流</strong>
+的执行标准。目标是让每个功能从需求到代码都走同一条可追溯、可评审、可复用的流水线，而不是各写各的。</p>
+<p>本文以 <code>daily-recipe-cli</code>
+项目（<code>specs/001-daily-recipe-cli/</code>）作为贯穿全篇的真实案例——它完整走完了一轮工作流，文中所有示例都可直接打开对应文件对照。</p>
+<p>适用角色：所有参与本项目或后续采用本工作流的开发者、评审人、AI
+编码助手（ZCode / Copilot 等）。</p>
+</blockquote>
+<hr />
+<h2 id="为什么用-spec-kit">1. 为什么用 Spec Kit</h2>
+<h3 id="痛点">1.1 痛点</h3>
+<p>团队项目开发常见的问题：</p>
+<ul>
+<li><strong>需求口头化</strong>：功能靠聊天和脑补，实现时才发现理解不一致，返工成本高。</li>
+<li><strong>实现黑盒</strong>：代码合入后没人知道”为什么这么做”，三个月后连原作者都说不清当初的取舍。</li>
+<li><strong>验收缺失</strong>：没有可执行的验收标准，“做完了”只是”看起来能跑”。</li>
+<li><strong>AI 协作失控</strong>：AI
+助手拿到一句含糊需求就开始写代码，写出来的东西经常跑偏。</li>
+</ul>
+<h3 id="spec-kit-给的答案">1.2 Spec Kit 给的答案</h3>
+<p>Spec Kit 把开发过程拆成一条 <strong>Spec（规格）驱动</strong>
+的流水线：<strong>先写规格、再写计划、再拆任务、最后实现</strong>，每个环节都有落盘的产物文档，AI
+与人类在同一套产物上协作。</p>
+<p>它的核心信条：<strong>需求不确定就不写代码</strong>；<strong>文档是代码的先行产物，而不是事后补写</strong>。</p>
+<h3 id="本项目跑通后的实际效果">1.3 本项目跑通后的实际效果</h3>
+<p><code>daily-recipe-cli</code> 用一轮完整工作流交付了 6 个命令 + 12
+个用户故事 + 全套单元测试，全程 8 次提交，git
+历史可完美还原工作流各阶段：</p>
+<pre><code>ecee0ee docs: init spec-kit project scaffold, constitution v1.0.0 and daily-recipe-cli spec   ← specify 阶段
+88316c5 docs: add implementation plan, research, data model, contracts, quickstart            ← plan 阶段
+c15e9b2 docs: generate task breakdown for daily-recipe-cli                                    ← tasks 阶段
+61e42ca feat: storage layer with atomic JSON writes, validation, and default recipe library   ← implement
+b5bc9c4 feat: implement today/week/add/list/remove/history commands with tests                 ← implement
+df3857f docs: polish - add README, CHANGELOG, spec FR-013, mark tasks complete                 ← 收尾
+eb3e4f8 fix: handle non-interactive week confirm and enrich empty-candidate hints               ← 修复
+67e6cbe docs: 添加 AGENTS.md 工作区指南                                                         ← 治理沉淀</code></pre>
+<p>产出物（都在 <code>specs/001-daily-recipe-cli/</code>
+下）：<code>spec.md</code>（功能规格）、<code>plan.md</code>（实现计划）、<code>research.md</code>（技术调研）、<code>data-model.md</code>（数据模型）、<code>tasks.md</code>（任务清单）、<code>contracts/data-schema.md</code>（数据契约）、<code>checklists/requirements.md</code>（需求核对表）。</p>
+<hr />
+<h2 id="核心概念与产物全景">2. 核心概念与产物全景</h2>
+<h3 id="工作区结构">2.1 工作区结构</h3>
+<p>一个启用 Spec Kit 的仓库包含：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>路径</th>
+<th>作用</th>
+<th>是否提交</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.speckit/commands/*.md</code></td>
+<td>各工作流命令的<strong>单一事实来源</strong>（定义每个命令的流程）</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>.specify/</code></td>
+<td>初始化配置（<code>feature.json</code>、<code>workflows/</code>、<code>memory/constitution.md</code>、<code>templates/</code>、<code>scripts/</code>）</td>
+<td>是（初始化后）</td>
+</tr>
+<tr>
+<td><code>specs/&lt;NNN&gt;-&lt;feature&gt;/</code></td>
+<td>每个功能的规格产物目录（本文核心资产）</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p><code>feature.json</code> 指向当前功能目录，例如本项目：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">&quot;feature_directory&quot;</span><span class="fu">:</span> <span class="st">&quot;specs/001-daily-recipe-cli&quot;</span><span class="fu">}</span></span></code></pre></div>
+<h3 id="三条规则先记住">2.2 三条规则先记住</h3>
+<ol type="1">
+<li><strong>命令文件是单一事实来源</strong>：<code>/speckit-specify</code>
+等入口只做分发，执行时以
+<code>.speckit/commands/speckit.specify.md</code>
+的文件流程为准。命令文件怎么写的，就怎么做，不自行增删步骤。</li>
+<li><strong>产物按阶段落盘</strong>：每个命令都会产出/更新一个文档，全部入
+git 仓库。</li>
+<li><strong>语言与提交约定跟随仓库
+AGENTS.md</strong>：本项目要求中文文档与中文提交信息，工作流产物同样遵守。</li>
+</ol>
+<h3 id="命令全景">2.3 命令全景</h3>
+<p>Spec Kit 共 10 个命令，本 SOP 只详讲主链路 6 个（见第 4
+节），其余在速查表中说明。</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>命令</th>
+<th>skill 入口</th>
+<th>作用</th>
+<th>阶段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>specify</code></td>
+<td><code>/speckit-specify</code></td>
+<td>创建/更新功能规格</td>
+<td>主链路</td>
+</tr>
+<tr>
+<td><code>clarify</code></td>
+<td><code>/speckit-clarify</code></td>
+<td>澄清需求歧义</td>
+<td>主链路</td>
+</tr>
+<tr>
+<td><code>plan</code></td>
+<td><code>/speckit-plan</code></td>
+<td>编写实现计划</td>
+<td>主链路</td>
+</tr>
+<tr>
+<td><code>tasks</code></td>
+<td><code>/speckit-tasks</code></td>
+<td>拆解任务清单</td>
+<td>主链路</td>
+</tr>
+<tr>
+<td><code>implement</code></td>
+<td><code>/speckit-implement</code></td>
+<td>按任务实现代码</td>
+<td>主链路</td>
+</tr>
+<tr>
+<td><code>analyze</code></td>
+<td><code>/speckit-analyze</code></td>
+<td>实现后回顾与收尾</td>
+<td>主链路</td>
+</tr>
+<tr>
+<td><code>constitution</code></td>
+<td><code>/speckit-constitution</code></td>
+<td>项目初始化、写入团队宪法</td>
+<td>初始化</td>
+</tr>
+<tr>
+<td><code>converge</code></td>
+<td><code>/speckit-converge</code></td>
+<td>多方案收敛到单一决策</td>
+<td>按需</td>
+</tr>
+<tr>
+<td><code>checklist</code></td>
+<td><code>/speckit-checklist</code></td>
+<td>生成/更新需求核对表</td>
+<td>按需</td>
+</tr>
+<tr>
+<td><code>taskstoissues</code></td>
+<td><code>/speckit-taskstoissues</code></td>
+<td>任务清单转 GitHub Issues</td>
+<td>按需</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="环境准备一次性">3. 环境准备（一次性）</h2>
+<h3 id="仓库初始化首次启用">3.1 仓库初始化（首次启用）</h3>
+<p>每个新仓库首次启用 Spec Kit 时运行一次：</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 若仓库尚未安装 Spec Kit：在仓库根目录初始化</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uvx</span> <span class="at">--from</span> speckit-ai-cli specify init <span class="at">--ai</span> generic</span></code></pre></div>
+<p>初始化会生成 <code>.speckit/commands/</code> 与
+<code>.specify/</code>，并写入
+<code>constitution.md</code>（项目宪法，见 5.1）。随后在根目录写入
+<code>AGENTS.md</code>（工作区指南，见 5.5），把团队的约定固化下来。</p>
+<h3 id="安装-skill-封装每人一次">3.2 安装 skill 封装（每人一次）</h3>
+<p>命令以 <strong>skill 形式</strong> 提供给 AI 助手（ZCode
+等），需要把封装 skill 安装到个人的 <code>~/.zcode/skills/</code>
+下：</p>
+<ol type="1">
+<li>从仓库/共享位置拷贝封装
+skill（<code>speckit-specify</code>、<code>speckit-clarify</code>、<code>speckit-plan</code>、<code>speckit-tasks</code>、<code>speckit-implement</code>、<code>speckit-analyze</code>、<code>speckit-constitution</code>、<code>speckit-converge</code>、<code>speckit-checklist</code>、<code>speckit-taskstoissues</code>）到
+<code>~/.zcode/skills/</code>。</li>
+<li>命名规则：<strong>命令文件里的点号换成连字符</strong>（<code>speckit.specify.md</code>
+→ <code>speckit-specify</code>）。</li>
+<li>验证：在仓库内输入 <code>/speckit-specify</code> 应能正常触发。</li>
+</ol>
+<blockquote>
+<p>封装 skill 只是入口，执行逻辑永远读仓库里的
+<code>.speckit/commands/*.md</code>，所以封装一旦装好，后续工作流升级只改仓库命令文件即可，无需重装。</p>
+</blockquote>
+<h3 id="目录约定">3.3 目录约定</h3>
+<ul>
+<li>新功能目录：<code>specs/&lt;NNN&gt;-&lt;feature-slug&gt;/</code>，编号递增（本项目第一个功能是
+<code>001-daily-recipe-cli</code>）。</li>
+<li>每轮工作流开始前确认 <code>feature.json</code>
+指向当前功能目录。</li>
+</ul>
+<hr />
+<h2 id="主链路详解">4. 主链路详解</h2>
+<p>以下按一次完整功能开发的顺序展开。每个命令都包含：<strong>何时调用 →
+做什么 → 产出什么 → 项目示例</strong>。</p>
+<h3 id="speckit-specify-需求-功能规格">4.1 <code>/speckit-specify</code>
+— 需求 → 功能规格</h3>
+<p><strong>何时调用</strong>：新功能启动时；需求变更时。</p>
+<p><strong>做什么</strong>：根据自然语言描述创建或更新
+<code>spec.md</code>，把模糊需求转成结构化规格：用户故事（User
+Story）、优先级、可独立验证的验收场景（Acceptance
+Scenarios）、独立测试（Independent Test）。</p>
+<p><strong>产出</strong>：<code>specs/&lt;NNN&gt;-&lt;feature&gt;/spec.md</code></p>
+<p><strong>示例</strong>（<code>specs/001-daily-recipe-cli/spec.md</code>）：</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Feature Specification: daily-recipe-cli</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>**Feature Branch**: 001-daily-recipe-cli</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>**Status**: Draft</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>**Input**: 用户描述：为自己解决「每天带饭不知道做什么」的决策痛点……</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">### User Story 1 - 前一晚定第二天的饭 (Priority: P1)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>用户在晚上运行推荐命令，希望快速决定第二天带去公司吃的菜。</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>**Independent Test**: 运行一次推荐命令，得到候选清单并选中一道，验证……</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>**Acceptance Scenarios**:</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Given** 食谱库中有 ≥3 道菜且无历史记录，**When** 用户运行今日推荐，</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>   **Then** 展示 1~3 道候选菜，且说明推荐理由。</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Given** 用户已经吃过某道菜，**When** 在最近 7 天内再次推荐，</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>   **Then** 该菜不会出现在候选清单中。</span></code></pre></div>
+<p><strong>要点</strong>：</p>
+<ul>
+<li>验收场景全部用 <strong>Given / When / Then</strong>
+句式，这是后面写测试的直接输入。</li>
+<li>优先级用 P1/P2/P3 标注，P1 是该版本必须做的。</li>
+<li>需求有歧义时先走 <code>/speckit-clarify</code> 再回来补全
+spec。</li>
+</ul>
+<h3 id="speckit-clarify-消除歧义">4.2 <code>/speckit-clarify</code> —
+消除歧义</h3>
+<p><strong>何时调用</strong>：spec
+中的需求存在多解、冲突、或团队对某些点理解不一致时。</p>
+<p><strong>做什么</strong>：围绕歧义点向干系人（产品/用户/团队）提问，把模糊表述收敛成确定结论，回写进
+<code>spec.md</code>。</p>
+<p><strong>产出</strong>：更新后的 <code>spec.md</code>（状态从 Draft
+推进）。</p>
+<p><strong>要点</strong>：</p>
+<ul>
+<li>不要替用户做主——不确定的语义必须问出来。</li>
+<li>每个澄清结论要落到 spec 的对应验收场景里，避免”问过就忘”。</li>
+<li>本项目 AGENTS.md 中有个现成例子：<code>week</code>
+命令的非交互确认（见 6.2
+FAQ），说明”交互行为在无人输入时怎么处理”这类边界必须澄清并写进代码行为。</li>
+</ul>
+<h3 id="speckit-plan-规格-实现计划">4.3 <code>/speckit-plan</code> —
+规格 → 实现计划</h3>
+<p><strong>何时调用</strong>：spec 稳定（至少 P1 故事清晰）后。</p>
+<p><strong>做什么</strong>：基于 spec 编写
+<code>plan.md</code>，确定技术路线：语言/版本、依赖、存储方案、测试策略、目标平台、项目类型；必要时并行产出
+<code>research.md</code>（技术调研）与
+<code>data-model.md</code>（数据模型）。</p>
+<p><strong>产出</strong>：<code>plan.md</code>（+ 可选
+<code>research.md</code>、<code>data-model.md</code>、<code>contracts/</code>）</p>
+<p><strong>示例</strong>（<code>plan.md</code> 关键段）：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Implementation Plan: daily-recipe-cli</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>**Branch**: 001-daily-recipe-cli | **Spec**: spec.md</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>一个单用户本机命令行工具，解决「每天带饭不知道做什么」的决策痛点。……</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Technical Context</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>**Language/Version**: Python 3.11+</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>**Primary Dependencies**: 运行时零第三方依赖（argparse / json / random / pathlib / datetime）</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>**Storage**: 本地 JSON 文件，数据目录 ~/.daily-recipe-cli/</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>**Testing**: pytest（核心逻辑单元测试：推荐、轮换去重、数据校验、历史读写）</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>**Project Type**: cli 工具（Python 包，uv run recipe 调用）</span></code></pre></div>
+<p><strong>要点</strong>：</p>
+<ul>
+<li><strong>数据契约先行</strong>：涉及持久化的功能，必须在 plan
+阶段就把 JSON schema 与错误语义写清楚（本项目写进
+<code>contracts/data-schema.md</code>）。契约定了，实现和手改数据的用户都不会踩雷。</li>
+<li>技术方案要给出取舍理由（为什么标准库而不是第三方库、为什么 JSON
+而不是 SQLite），这些理由就是将来评审和排错的地图。</li>
+<li>计划评审通过前不要进入 tasks 阶段。</li>
+</ul>
+<h3 id="speckit-tasks-计划-任务清单">4.4 <code>/speckit-tasks</code> —
+计划 → 任务清单</h3>
+<p><strong>何时调用</strong>：plan 评审通过后。</p>
+<p><strong>做什么</strong>：把 spec 的用户故事 + plan
+的技术方案拆成可独立执行、可独立测试的任务。按用户故事分组，标注每个任务属于哪个故事、能否与其他任务并行（<code>[P]</code>
+标记）。</p>
+<p><strong>产出</strong>：<code>tasks.md</code></p>
+<p><strong>示例</strong>（<code>tasks.md</code> 格式）：</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## Format: `[ID] [P?] [Story] Description`</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">P</span><span class="co">]</span> 可并行（不同文件、无依赖）的任务</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Story</span><span class="co">]</span> 属于哪个用户故事（US1 / US2 / US3）</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">001</span><span class="co">] [US1]</span> 实现 storage 层：原子 JSON 写入、校验、内置默认食谱库</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">002</span><span class="co">] [US1]</span> 实现 today 命令：候选生成 + 历史记录</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">003</span><span class="co">] [P]</span> <span class="co">[</span><span class="ot">US1</span><span class="co">]</span> 实现 add / list / remove 食谱命令</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">004</span><span class="co">] [P]</span> <span class="co">[</span><span class="ot">US2</span><span class="co">]</span> 实现 week 周计划命令</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">005</span><span class="co">] [US1-3]</span> 为全部用户故事编写单元测试</span></code></pre></div>
+<p><strong>要点</strong>：</p>
+<ul>
+<li>每个任务必须小到能独立完成并验证（一个任务 = 一个提交）。</li>
+<li>测试任务不是附加项——本项目宪法要求核心逻辑必须覆盖单元测试，因此每个用户故事都带测试任务。</li>
+<li>任务完成状态在 implement 过程中逐个勾选，最终汇总到
+<code>checklists/requirements.md</code> 核对表。</li>
+</ul>
+<h3 id="speckit-implement-任务-代码">4.5 <code>/speckit-implement</code>
+— 任务 → 代码</h3>
+<p><strong>何时调用</strong>：tasks 拆解完成，从第一个任务开始。</p>
+<p><strong>做什么</strong>：按 <code>tasks.md</code>
+逐个实现。每次实现对应一个原子提交，提交信息遵循仓库约定（本项目：中文 +
+Conventional Commits 前缀）。</p>
+<p><strong>产出</strong>：应用代码 + 测试 + 中文提交历史</p>
+<p><strong>示例</strong>（本项目提交历史中的典型形态）：</p>
+<pre><code>61e42ca feat: storage layer with atomic JSON writes, validation, and default recipe library
+b5bc9c4 feat: implement today/week/add/list/remove/history commands with tests
+eb3e4f8 fix: handle non-interactive week confirm and enrich empty-candidate hints</code></pre>
+<p><strong>要点</strong>：</p>
+<ul>
+<li>严格遵守 <code>tasks.md</code>
+的顺序与范围：不扩大实现范围（YAGNI），不跳过测试任务。</li>
+<li>每个任务结束跑一遍测试套件（本项目
+<code>uv run pytest</code>），保证绿再提交。</li>
+<li>发现任务拆解不合理或需求有遗漏时，不要悄悄绕过去——回到对应的
+<code>specify</code> / <code>tasks</code> 阶段更新产物再继续。</li>
+<li>数据契约相关的实现（本项目 <code>storage.py</code>）必须对照
+<code>contracts/data-schema.md</code>：非法数据绝不静默容错，必须抛带中文信息的
+<code>DataError</code>。</li>
+</ul>
+<h3 id="speckit-analyze-实现后回顾与收尾">4.6
+<code>/speckit-analyze</code> — 实现后回顾与收尾</h3>
+<p><strong>何时调用</strong>：所有任务完成后、合入/发布前。</p>
+<p><strong>做什么</strong>：对照 spec
+与核对表做整体回顾：需求是否全部满足、测试是否覆盖、文档（README/CHANGELOG）是否需要补齐、有没有实现中偏离
+spec 的地方需要回写。</p>
+<p><strong>产出</strong>：<code>checklists/requirements.md</code>
+勾选完成、spec 状态更新、收尾提交。</p>
+<p><strong>示例</strong>（本项目收尾提交）：</p>
+<pre><code>df3857f docs: polish - add README, CHANGELOG, spec FR-013, mark tasks complete</code></pre>
+<p><strong>要点</strong>：</p>
+<ul>
+<li>用户可见行为变更必须在 <code>CHANGELOG.md</code> 追加中文条目。</li>
+<li>遗漏的需求（如本项目收尾时补的 FR-013）要回写到
+<code>spec.md</code>，保证 spec 永远反映最终行为。</li>
+</ul>
+<hr />
+<h2 id="团队协作规约强制">5. 团队协作规约（强制）</h2>
+<p>以下规约随仓库文件固化，全员（含 AI 助手）必须遵守。</p>
+<h3 id="项目宪法constitution">5.1 项目宪法（constitution）</h3>
+<p>初始化时用 <code>/speckit-constitution</code>
+写入团队/项目宪法（<code>.specify/memory/constitution.md</code>），内容包括核心原则、技术约束、开发工作流、治理规则。本项目宪法含
+5
+条核心原则（极简优先、文档先行、离线可用、测试即契约、渐进收敛等），后续功能开发均受其约束。<strong>宪法修改走评审，不随意改。</strong></p>
+<h3 id="specs-产物入仓并参与评审">5.2 specs 产物入仓并参与评审</h3>
+<ul>
+<li><code>specs/</code> 下所有产物文档必须提交到
+git，与代码同库、同步演进。</li>
+<li><strong>spec / plan / tasks 的变更走 PR
+评审</strong>，与代码评审同等重要。评审人重点看：验收场景是否可执行、技术取舍是否有依据、任务是否可独立验证。</li>
+<li>禁止”代码合入后补文档”——文档是前置产物。</li>
+</ul>
+<h3 id="提交约定">5.3 提交约定</h3>
+<ul>
+<li>提交信息用中文，保留 Conventional Commits 前缀（<code>feat:</code> /
+<code>fix:</code> / <code>docs:</code> / <code>test:</code> /
+<code>refactor:</code>），标题用中文概括改动。</li>
+<li>一个任务一个提交，提交信息能对应到 <code>tasks.md</code> 的任务
+ID。</li>
+<li>用户可见行为变更同步追加 <code>CHANGELOG.md</code>
+条目（中文）。</li>
+</ul>
+<h3 id="ai-助手接入约定">5.4 AI 助手接入约定</h3>
+<ul>
+<li>AI
+助手执行工作流时：<strong>命令文件（<code>.speckit/commands/*.md</code>）是单一事实来源</strong>，skill
+封装只做入口，不自行增删步骤。</li>
+<li>用户可见输出、代码注释、文档一律中文（遵循 AGENTS.md）。</li>
+<li>测试绝不能触碰真实用户数据目录（本项目用 <code>RECIPE_CLI_DIR</code>
+环境变量指向临时目录）。</li>
+<li>推荐逻辑要求可复现（固定随机种子），实现时不得引入非确定性。</li>
+</ul>
+<h3 id="agents.md-工作区指南">5.5 AGENTS.md 工作区指南</h3>
+<p>每个采用本工作流的仓库必须有一份 <code>AGENTS.md</code>，作为 AI
+与开发者共享的工作区说明，内容至少覆盖：项目是什么、目录结构、构建测试命令、数据契约、行为规则、测试约定、语言与提交约定。它是工作流落地的”操作手册”，本文档是”方法论”，两者配合使用。</p>
+<hr />
+<h2 id="踩坑与-faq">6. 踩坑与 FAQ</h2>
+<h3 id="命令文件与-skill-封装冲突怎么办">6.1 命令文件与 skill
+封装冲突怎么办？</h3>
+<p><strong>以命令文件为准</strong>。skill 封装在 frontmatter
+里明确写了”若文件流程与本封装冲突，以命令文件为准”，因此升级工作流只需更新
+<code>.speckit/commands/*.md</code>
+并提交，全员自动生效，无需重新分发封装。</p>
+<h3 id="非交互场景ci-管道下交互式确认会崩吗">6.2 非交互场景（CI /
+管道）下交互式确认会崩吗？</h3>
+<p>会，所以必须有兜底。本项目 <code>week</code> 命令用
+<code>input()</code> 读确认，捕获 <code>EOFError</code>（非交互时 input
+抛异常）视为”否”，而不是崩溃。<strong>凡是涉及交互的行为，spec
+里都要写明非交互时的默认行为。</strong></p>
+<h3 id="手改-json-数据弄坏了文件怎么办">6.3 手改 JSON
+数据弄坏了文件怎么办？</h3>
+<p>不要静默容错。按契约实现：任何命令加载数据时发现非法数据（缺字段、类型错、JSON
+损坏）都抛带中文信息的
+<code>DataError</code>（含出错字段/位置），写入用「先写
+<code>.tmp</code> 再
+<code>os.replace()</code>」的原子方式。宁可报错，不可悄悄覆盖用户数据。</p>
+<h3 id="功能做完才发现需求理解错了">6.4
+功能做完才发现需求理解错了？</h3>
+<p>这正是流水线的价值所在——<strong>需求在 spec
+阶段成本最低</strong>。做法：回到 <code>/speckit-clarify</code> 澄清 →
+更新 <code>spec.md</code> → 更新 <code>plan.md</code> /
+<code>tasks.md</code> →
+再继续实现。不要用代码补丁绕过文档，否则三个月后没人知道当初为什么这么做。</p>
+<h3 id="任务拆得太大-太小怎么办">6.5 任务拆得太大 / 太小怎么办？</h3>
+<p>太大：拆到”一个任务 =
+一个可独立验证的提交”。太小：合并同类项。判断标准：任务完成时能不能写出一个干净的中文提交信息、跑一次测试。</p>
+<h3 id="不写-spec-直接让-ai-写代码行不行">6.6 不写 spec 直接让 AI
+写代码行不行？</h3>
+<p>不推荐。Spec Kit 的价值正是用文档把”AI
+的随机性”锁成”可评审的确定性”。直接写代码时 AI
+会自己做一堆隐式假设，而这些假设无处评审。至少走一遍
+<code>/speckit-specify</code> +
+<code>/speckit-tasks</code>，把验收场景和任务边界定下来，再进
+implement。</p>
+<hr />
+<h2 id="快速参考">7. 快速参考</h2>
+<h3 id="主链路速记">主链路速记</h3>
+<pre><code>新功能 ──specify──▶ spec.md ──clarify──▶ 歧义消除
+                              │
+                              ▼
+              plan ──▶ plan.md (+ research / data-model / contracts)
+                              │
+                              ▼
+             tasks ──▶ tasks.md（按用户故事 + 并行标记）
+                              │
+                              ▼
+          implement ──▶ 代码 + 测试 + 中文提交（一个任务一个提交）
+                              │
+                              ▼
+          analyze ──▶ 核对表勾选 + CHANGELOG + spec 回写</code></pre>
+<h3 id="评审检查单pr-时逐项打勾">评审检查单（PR 时逐项打勾）</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" /><code>spec.md</code>
+的验收场景可执行（Given/When/Then 完整）</label></li>
+<li><label><input type="checkbox" /><code>plan.md</code>
+技术取舍有理由</label></li>
+<li><label><input type="checkbox" /><code>tasks.md</code> 任务与 spec
+故事一一对应</label></li>
+<li><label><input
+type="checkbox" />代码与数据契约（<code>contracts/</code>）一致</label></li>
+<li><label><input
+type="checkbox" />核心逻辑有单元测试且通过</label></li>
+<li><label><input type="checkbox" />提交信息中文 + Conventional Commits
+前缀</label></li>
+<li><label><input type="checkbox" />用户可见变更已追加
+<code>CHANGELOG.md</code></label></li>
+<li><label><input type="checkbox" />spec / plan / tasks
+与最终行为一致</label></li>
+</ul>
+<h3 id="相关文件">相关文件</h3>
+<ul>
+<li>命令定义（单一事实来源）：<code>.speckit/commands/speckit.*.md</code></li>
+<li>项目宪法：<code>.specify/memory/constitution.md</code></li>
+<li>案例产物：<code>specs/001-daily-recipe-cli/</code></li>
+<li>工作区指南：<code>AGENTS.md</code></li>
+</ul>
+</body>
+</html>

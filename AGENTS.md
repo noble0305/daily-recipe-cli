@@ -18,7 +18,7 @@
 - `src/daily_recipe_cli/data/default_recipes.json` — 内置初始食谱库，首次运行复制到用户数据目录。
 - `tests/` — pytest，核心逻辑均有覆盖。
 - `specs/001-daily-recipe-cli/` — Spec 驱动开发文档（spec、tasks、contracts），非应用代码。
-- `.specify/` / `.speckit/` — 工作流工具元数据，非应用代码，不要随意改动。
+- `.specify/` / `.speckit/` — Spec Kit 工作流工具，非应用代码，不要随意改动。`.speckit/commands/speckit.*.md` 是各工作流命令的单一事实来源；已在本机 `~/.zcode/skills/` 下配置了同名封装 skill（`/speckit-specify`、`/speckit-plan`、`/speckit-tasks`、`/speckit-implement` 等，点号换连字符），封装只做入口、执行时以命令文件为准。
 
 ## 构建与测试
 

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>产品需求规格说明书示例：轻记（任务管理 App）</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/Users/wangzhi/.agents/skills/huashu-md-html/templates/interactive/theme.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">产品需求规格说明书示例：轻记（任务管理 App）</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#产品需求规格说明书轻记"
+id="toc-产品需求规格说明书轻记">产品需求规格说明书：轻记</a>
+<ul>
+<li><a href="#背景与目标" id="toc-背景与目标">1. 背景与目标</a>
+<ul>
+<li><a href="#产品愿景" id="toc-产品愿景">1.1 产品愿景</a></li>
+<li><a href="#背景与痛点" id="toc-背景与痛点">1.2 背景与痛点</a></li>
+<li><a href="#目标用户画像" id="toc-目标用户画像">1.3
+目标用户画像</a></li>
+<li><a href="#成功指标" id="toc-成功指标">1.4 成功指标</a></li>
+</ul></li>
+<li><a href="#产品概述" id="toc-产品概述">2. 产品概述</a>
+<ul>
+<li><a href="#产品定位" id="toc-产品定位">2.1 产品定位</a></li>
+<li><a href="#产品形态与平台" id="toc-产品形态与平台">2.2
+产品形态与平台</a></li>
+<li><a href="#产品范围与-mvp-边界" id="toc-产品范围与-mvp-边界">2.3
+产品范围与 MVP 边界</a></li>
+</ul></li>
+<li><a href="#信息架构与导航" id="toc-信息架构与导航">3.
+信息架构与导航</a>
+<ul>
+<li><a href="#信息架构图" id="toc-信息架构图">3.1 信息架构图</a></li>
+<li><a href="#导航与页面关系" id="toc-导航与页面关系">3.2
+导航与页面关系</a></li>
+</ul></li>
+<li><a href="#功能模块" id="toc-功能模块">4. 功能模块</a>
+<ul>
+<li><a href="#模块-1任务快速记录priority-p1"
+id="toc-模块-1任务快速记录priority-p1">4.1 模块
+1：任务快速记录（Priority: P1）</a></li>
+<li><a href="#模块-2清单分组priority-p1"
+id="toc-模块-2清单分组priority-p1">4.2 模块 2：清单分组（Priority:
+P1）</a></li>
+<li><a href="#模块-3今日视图与截止日期priority-p1"
+id="toc-模块-3今日视图与截止日期priority-p1">4.3 模块
+3：今日视图与截止日期（Priority: P1）</a></li>
+<li><a href="#模块-4完成与归档priority-p1"
+id="toc-模块-4完成与归档priority-p1">4.4 模块 4：完成与归档（Priority:
+P1）</a></li>
+<li><a href="#模块-5账号与登录priority-p2"
+id="toc-模块-5账号与登录priority-p2">4.5 模块 5：账号与登录（Priority:
+P2）</a></li>
+<li><a href="#模块-6离线与同步priority-p2"
+id="toc-模块-6离线与同步priority-p2">4.6 模块 6：离线与同步（Priority:
+P2）</a></li>
+<li><a href="#模块-7设置与个性化priority-p3"
+id="toc-模块-7设置与个性化priority-p3">4.7 模块
+7：设置与个性化（Priority: P3）</a></li>
+</ul></li>
+<li><a href="#非功能需求" id="toc-非功能需求">5. 非功能需求</a>
+<ul>
+<li><a href="#性能" id="toc-性能">5.1 性能</a></li>
+<li><a href="#安全与隐私" id="toc-安全与隐私">5.2 安全与隐私</a></li>
+<li><a href="#兼容性" id="toc-兼容性">5.3 兼容性</a></li>
+<li><a href="#可用性与可访问性" id="toc-可用性与可访问性">5.4
+可用性与可访问性</a></li>
+<li><a href="#合规与法务" id="toc-合规与法务">5.5 合规与法务</a></li>
+</ul></li>
+<li><a href="#数据与埋点" id="toc-数据与埋点">6. 数据与埋点</a>
+<ul>
+<li><a href="#关键数据实体" id="toc-关键数据实体">6.1
+关键数据实体</a></li>
+<li><a href="#埋点计划" id="toc-埋点计划">6.2 埋点计划</a></li>
+</ul></li>
+<li><a href="#里程碑与排期" id="toc-里程碑与排期">7. 里程碑与排期</a>
+<ul>
+<li><a href="#版本规划" id="toc-版本规划">7.1 版本规划</a></li>
+<li><a href="#里程碑节点" id="toc-里程碑节点">7.2 里程碑节点</a></li>
+</ul></li>
+<li><a href="#风险与依赖" id="toc-风险与依赖">8. 风险与依赖</a>
+<ul>
+<li><a href="#依赖" id="toc-依赖">8.1 依赖</a></li>
+<li><a href="#风险清单" id="toc-风险清单">8.2 风险清单</a></li>
+</ul></li>
+<li><a href="#验收与上线" id="toc-验收与上线">9. 验收与上线</a>
+<ul>
+<li><a href="#验收方式" id="toc-验收方式">9.1 验收方式</a></li>
+<li><a href="#上线计划" id="toc-上线计划">9.2 上线计划</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<blockquote>
+<p>本文件是 <a href="prd-template.md"><code>prd-template.md</code></a>
+的完整填写示例，用一款从零开始的 任务管理
+App「轻记」示范完整九章怎么填。<strong>仅供参考结构</strong>，实际产品请照模板重写。</p>
+<p>说明：本示例刻意覆盖大产品要素（多端、多用户、订阅、埋点、灰度），
+即使你的产品更简单，也建议保留章节框架，内容从简即可。</p>
+</blockquote>
+<hr />
+<h1 id="产品需求规格说明书轻记">产品需求规格说明书：轻记</h1>
+<table>
+<thead>
+<tr>
+<th>元信息</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文档版本</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td>产品版本</td>
+<td>v1.0（MVP）</td>
+</tr>
+<tr>
+<td>编写人</td>
+<td>产品经理 王小明</td>
+</tr>
+<tr>
+<td>评审人</td>
+<td>开发负责人 / 设计负责人 / 测试负责人</td>
+</tr>
+<tr>
+<td>创建日期</td>
+<td>2026-08-15</td>
+</tr>
+<tr>
+<td>最后更新</td>
+<td>2026-08-15</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>评审中</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="背景与目标">1. 背景与目标</h2>
+<h3 id="产品愿景">1.1 产品愿景</h3>
+<p>让每个需要管理多个项目、多套生活清单的人，用 30
+秒以内的操作维护一张永远可信的任务清单——“想起什么记什么，打开就能看到今天该做什么”。</p>
+<h3 id="背景与痛点">1.2 背景与痛点</h3>
+<ul>
+<li>现有任务 App
+功能臃肿（看板/甘特/日历全堆在一起），新手面对配置项无从下手，一周内弃用率超
+60%。</li>
+<li>个人与工作事务混在一个清单里，缺少轻量的视图切换（工作/生活/项目）。</li>
+<li>多数竞品数据绑定账号体系，离线场景（地铁/飞机）下无法快速记录。</li>
+<li>订阅制竞品价格高（≥¥68/年），轻度用户被拒之门外。</li>
+</ul>
+<h3 id="目标用户画像">1.3 目标用户画像</h3>
+<h4 id="画像-a职场多面手">画像 A：职场多面手</h4>
+<ul>
+<li><strong>基本信息</strong>：25~35
+岁，互联网/咨询/市场从业者，同时推进 2~3 个工作项目 +
+个人生活清单。</li>
+<li><strong>使用场景</strong>：通勤路上随手记任务；早会前快速过一遍今天要做的事。</li>
+<li><strong>核心诉求</strong>：记录快、当日视图清晰、不被打断。</li>
+<li><strong>使用频率</strong>：每天 5 次以上。</li>
+</ul>
+<h4 id="画像-b清单强迫症学生">画像 B：清单强迫症学生</h4>
+<ul>
+<li><strong>基本信息</strong>：18~24
+岁，大学生/研究生，课业、社团、兼职多线并行。</li>
+<li><strong>使用场景</strong>：课间记录作业与截止日期；周末规划复习计划。</li>
+<li><strong>核心诉求</strong>：免费、简洁、按截止日期排序。</li>
+<li><strong>使用频率</strong>：每周 3~5 次。</li>
+</ul>
+<h3 id="成功指标">1.4 成功指标</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>类型</th>
+<th>指标</th>
+<th>定义</th>
+<th>目标值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>北极星</td>
+<td>周活跃任务创建数</td>
+<td>每周创建任务的总次数 / 周活跃用户数</td>
+<td>≥ 7 次/人/周</td>
+</tr>
+<tr>
+<td>关键</td>
+<td>D30 留存</td>
+<td>安装后第 30 天仍活跃的用户占比</td>
+<td>≥ 25%</td>
+</tr>
+<tr>
+<td>关键</td>
+<td>任务完成率</td>
+<td>已到截止日期且被标记完成的任务占比</td>
+<td>≥ 60%</td>
+</tr>
+<tr>
+<td>关键</td>
+<td>首次记录耗时</td>
+<td>从打开 App 到创建第一条任务的平均秒数</td>
+<td>≤ 15 秒</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="产品概述">2. 产品概述</h2>
+<h3 id="产品定位">2.1 产品定位</h3>
+<p>需要管理多项目多清单的个人用户，在碎片时间用手机快速记录与查看任务，通过一个极简、快速、免费可用的任务管理
+App，达成”清单永远可信、今日清晰可见”。</p>
+<h3 id="产品形态与平台">2.2 产品形态与平台</h3>
+<p>移动端 App，iOS + Android 首发（MVP）；Web
+端只读视图与数据导出在二期；无桌面端规划。</p>
+<h3 id="产品范围与-mvp-边界">2.3 产品范围与 MVP 边界</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>范围</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>本期（V1/MVP）包含</strong></td>
+<td>任务记录（快速添加）、清单分组（工作/生活/项目）、今日视图、截止日期、完成后归档、离线可用、账号登录（仅用于跨端同步）</td>
+</tr>
+<tr>
+<td><strong>本期不包含（YAGNI）</strong></td>
+<td>看板/甘特图、日历视图、协作与分享、标签体系、提醒推送、AI
+任务拆解</td>
+</tr>
+<tr>
+<td><strong>二期候选</strong></td>
+<td>提醒推送、Web 端只读、数据导出、订阅会员（去广告/高级排序）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="信息架构与导航">3. 信息架构与导航</h2>
+<h3 id="信息架构图">3.1 信息架构图</h3>
+<pre><code>轻记 App
+├── 今日（默认首页，Tab 1）
+│   ├── 今日待办列表（按截止时间排序）
+│   ├── 快速添加任务（底部输入条）
+│   └── 已完成列表（可折叠）
+├── 清单（Tab 2）
+│   ├── 全部清单
+│   ├── 工作 / 生活 / 项目（默认三个）
+│   ├── 新建清单
+│   └── 清单详情页（该清单的任务列表）
+├── 归档（Tab 3）
+│   └── 已完成任务（按完成日期倒序）
+└── 我的（Tab 4）
+    ├── 账号与登录
+    ├── 设置（排序方式/默认清单/外观）
+    └── 关于</code></pre>
+<h3 id="导航与页面关系">3.2 导航与页面关系</h3>
+<ul>
+<li>主导航为底部四 Tab（今日 / 清单 / 归档 / 我的）。</li>
+<li>快速添加入口：今日页底部常驻输入条，输入即创建，回车即保存（全局最重路径）。</li>
+<li>清单详情 ↔︎ 今日页：任务归属清单，今日页长按任务可移动/改清单。</li>
+<li>从任务卡片可跳转任务详情页（编辑标题、截止日期、清单归属）。</li>
+</ul>
+<hr />
+<h2 id="功能模块">4. 功能模块</h2>
+<h3 id="模块-1任务快速记录priority-p1">4.1 模块
+1：任务快速记录（Priority: P1）</h3>
+<p><strong>模块描述</strong></p>
+<p>App 的第一入口与核心价值：用户在 15 秒内完成”打开 App → 记下任务 →
+关掉”。 覆盖今日页底部输入条、自然语言日期解析（“明天 3
+点”）、任务自动落入默认清单。</p>
+<p><strong>关键用户故事</strong></p>
+<ul>
+<li>作为职场多面手，我希望在通勤路上 10
+秒记下一个任务，以便下车后不用再想着它。</li>
+<li>作为清单强迫症学生，我希望任务能自动识别”明天下午”这类时间，以便少点几下。</li>
+</ul>
+<p><strong>验收要点</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox" />从冷启动到创建任务成功 ≤ 15
+秒</label></li>
+<li><label><input
+type="checkbox" />自然语言日期解析（明天/后天/下周一/具体日期时间）正确率
+≥ 95%</label></li>
+<li><label><input
+type="checkbox" />无网络时可创建任务，联网后自动同步</label></li>
+<li><label><input
+type="checkbox" />新建任务默认落入”收件箱”清单，可快速改清单</label></li>
+</ul>
+<p><strong>依赖与其他模块的关系</strong></p>
+<p>依赖模块 2（清单分组）确定默认归属；被模块 6（离线同步）支撑。</p>
+<h3 id="模块-2清单分组priority-p1">4.2 模块 2：清单分组（Priority:
+P1）</h3>
+<p><strong>模块描述</strong></p>
+<p>以清单为单位组织任务，内置工作/生活/项目三个默认清单，支持新建、重命名、删除（非空清单删除需二次确认）。清单页展示任务数，支持按清单过滤今日视图。</p>
+<p><strong>关键用户故事</strong></p>
+<ul>
+<li>作为职场多面手，我希望把工作与生活任务分开，以便在特定场景只看需要的清单。</li>
+</ul>
+<p><strong>验收要点</strong></p>
+<ul class="task-list">
+<li><label><input
+type="checkbox" />新建/重命名/删除清单全流程可用，删除非空清单有二次确认</label></li>
+<li><label><input type="checkbox" />任务可在清单间移动（≥1
+种快捷方式）</label></li>
+<li><label><input type="checkbox" />今日页支持按清单过滤</label></li>
+</ul>
+<p><strong>依赖与其他模块的关系</strong></p>
+<p>被模块 1（快速记录）依赖；无下游依赖。</p>
+<h3 id="模块-3今日视图与截止日期priority-p1">4.3 模块
+3：今日视图与截止日期（Priority: P1）</h3>
+<p><strong>模块描述</strong></p>
+<p>今日页聚合所有”今天到期/已逾期”任务，按截止时间升序展示；逾期任务置顶并用红色标记。支持设置截止日期（日期
++ 可选时间）。</p>
+<p><strong>关键用户故事</strong></p>
+<ul>
+<li>作为职场多面手，我希望早会前打开 App
+就知道今天该做什么，以便不遗漏。</li>
+</ul>
+<p><strong>验收要点</strong></p>
+<ul class="task-list">
+<li><label><input
+type="checkbox" />今日页正确聚合今天到期与逾期任务，排序正确</label></li>
+<li><label><input type="checkbox" />逾期任务视觉标记明确（红色 +
+置顶）</label></li>
+<li><label><input
+type="checkbox" />截止日期可设日期与时间，可清除</label></li>
+</ul>
+<p><strong>依赖与其他模块的关系</strong></p>
+<p>依赖模块 1、2；无下游依赖。</p>
+<h3 id="模块-4完成与归档priority-p1">4.4 模块 4：完成与归档（Priority:
+P1）</h3>
+<p><strong>模块描述</strong></p>
+<p>任务完成后一键勾选，移入已完成；归档页按完成日期倒序展示，支持批量清理。</p>
+<p><strong>关键用户故事</strong></p>
+<ul>
+<li>作为清单强迫症学生，我希望完成任务后清单自动清爽，以便获得完成感。</li>
+</ul>
+<p><strong>验收要点</strong></p>
+<ul class="task-list">
+<li><label><input
+type="checkbox" />勾选完成后任务从今日/清单视图消失，进入归档</label></li>
+<li><label><input
+type="checkbox" />归档页可按日期倒序查看，支持批量删除</label></li>
+<li><label><input type="checkbox" />误操作可撤销（勾选完成后 5
+秒内可撤回）</label></li>
+</ul>
+<p><strong>依赖与其他模块的关系</strong></p>
+<p>依赖模块 1、2、3；无下游依赖。</p>
+<h3 id="模块-5账号与登录priority-p2">4.5 模块 5：账号与登录（Priority:
+P2）</h3>
+<p><strong>模块描述</strong></p>
+<p>手机号 + 验证码登录（MVP
+不做第三方登录），登录后支持跨端数据同步；未登录时可离线使用全部功能，登录后合并本地数据。</p>
+<p><strong>关键用户故事</strong></p>
+<ul>
+<li>作为职场多面手，我希望换手机后数据不丢，以便长期使用。</li>
+</ul>
+<p><strong>验收要点</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox" />手机号 +
+验证码登录全流程可用</label></li>
+<li><label><input
+type="checkbox" />未登录状态可完整使用核心功能（记录/清单/今日）</label></li>
+<li><label><input
+type="checkbox" />登录后本地数据与服务端数据合并，无重复无丢失</label></li>
+</ul>
+<p><strong>依赖与其他模块的关系</strong></p>
+<p>被模块 6（同步）依赖；依赖后端账号服务。</p>
+<h3 id="模块-6离线与同步priority-p2">4.6 模块 6：离线与同步（Priority:
+P2）</h3>
+<p><strong>模块描述</strong></p>
+<p>全功能离线可用；联网后自动同步（CRDT
+或版本号合并），冲突时后写覆盖。同步为静默后台行为，用户无感知。</p>
+<p><strong>关键用户故事</strong></p>
+<ul>
+<li>作为清单强迫症学生，我希望在地铁上没网也能记任务，以便不错过灵感。</li>
+</ul>
+<p><strong>验收要点</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox" />断网下全部核心功能可用</label></li>
+<li><label><input
+type="checkbox" />恢复网络后自动同步，无需手动触发</label></li>
+<li><label><input
+type="checkbox" />同步冲突有确定性规则（后写覆盖），不产生重复任务</label></li>
+</ul>
+<p><strong>依赖与其他模块的关系</strong></p>
+<p>依赖模块 5（账号）；支撑模块 1~4 的离线能力。</p>
+<h3 id="模块-7设置与个性化priority-p3">4.7 模块
+7：设置与个性化（Priority: P3）</h3>
+<p><strong>模块描述</strong></p>
+<p>设置页含：默认清单、排序方式（截止时间/创建时间/手动）、深色模式、清除数据。</p>
+<p><strong>关键用户故事</strong></p>
+<ul>
+<li>作为职场多面手，我希望按自己的习惯定制排序，以便用得顺手。</li>
+</ul>
+<p><strong>验收要点</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox" />各项设置生效且持久化</label></li>
+<li><label><input type="checkbox" />深色模式切换即时生效</label></li>
+</ul>
+<p><strong>依赖与其他模块的关系</strong></p>
+<p>无强依赖；被全局 UI 支撑。</p>
+<hr />
+<h2 id="非功能需求">5. 非功能需求</h2>
+<h3 id="性能">5.1 性能</h3>
+<ul>
+<li>冷启动到可交互 ≤ 2 秒（中端机型）。</li>
+<li>今日页 1000 条任务渲染 ≤ 1 秒，列表滚动流畅（≥ 55fps）。</li>
+<li>首次记录耗时（北极星相关）≤ 15 秒。</li>
+</ul>
+<h3 id="安全与隐私">5.2 安全与隐私</h3>
+<ul>
+<li>登录使用验证码 + 短时令牌，令牌过期重登。</li>
+<li>任务数据在传输层加密（HTTPS）；服务端存储加密。</li>
+<li>隐私：仅采集任务文本与使用行为数据（见第 6
+章埋点），不采集通讯录/位置；提供数据导出与注销账号入口。</li>
+</ul>
+<h3 id="兼容性">5.3 兼容性</h3>
+<ul>
+<li>iOS ≥ 15.0、Android ≥ 8.0（覆盖当季主流机型）。</li>
+<li>支持 320~430pt 宽度屏幕；刘海屏/全面屏适配。</li>
+<li>深色/浅色模式均需完整适配。</li>
+</ul>
+<h3 id="可用性与可访问性">5.4 可用性与可访问性</h3>
+<ul>
+<li>关键路径（记录/查看/完成）成功率 ≥ 99.5%。</li>
+<li>支持系统动态字号（正文可缩放 200% 不破版）；主要操作热区 ≥
+44pt。</li>
+<li>全部功能可纯键盘/读屏操作（TalkBack / VoiceOver 基础支持）。</li>
+</ul>
+<h3 id="合规与法务">5.5 合规与法务</h3>
+<ul>
+<li>隐私政策与用户协议 MVP 上线前完成法务评审。</li>
+<li>数据存储与处理符合《个人信息保护法》；不向第三方出售数据。</li>
+<li>注销账号即删除全部个人数据（含任务与行为数据）。</li>
+</ul>
+<hr />
+<h2 id="数据与埋点">6. 数据与埋点</h2>
+<h3 id="关键数据实体">6.1 关键数据实体</h3>
+<ul>
+<li><strong>任务（Task）</strong>：用户创建的待办事项。属性：标题、截止日期、是否完成、完成时间、所属清单、创建时间、来源（手动/自然语言解析）。</li>
+<li><strong>清单（List）</strong>：任务的归类容器。属性：名称、类型（内置/自定义）、排序、创建时间。</li>
+<li><strong>用户（User）</strong>：注册账号。属性：手机号（脱敏）、创建时间、上次登录时间、订阅状态（二期）。</li>
+<li><strong>同步记录（SyncLog）</strong>：离线变更的合并轨迹。属性：变更时间、设备、版本号。</li>
+</ul>
+<h3 id="埋点计划">6.2 埋点计划</h3>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>触发时机</th>
+<th>关联指标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>task_created</td>
+<td>用户创建任务成功</td>
+<td>周活跃任务创建数</td>
+</tr>
+<tr>
+<td>task_completed</td>
+<td>任务被标记完成</td>
+<td>任务完成率</td>
+</tr>
+<tr>
+<td>app_open</td>
+<td>App 冷启动/回前台</td>
+<td>留存、活跃</td>
+</tr>
+<tr>
+<td>task_create_duration</td>
+<td>打开 App 到创建成功</td>
+<td>首次记录耗时</td>
+</tr>
+<tr>
+<td>sync_conflict</td>
+<td>同步发生冲突</td>
+<td>同步质量</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="里程碑与排期">7. 里程碑与排期</h2>
+<h3 id="版本规划">7.1 版本规划</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>版本</th>
+<th>时间窗口</th>
+<th>核心范围</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V1（MVP）</td>
+<td>2026-09 ~ 2026-12</td>
+<td>模块 1~4（P1）+ 模块 5~6（P2）</td>
+<td>验证北极星：周活跃任务创建数 ≥ 7</td>
+</tr>
+<tr>
+<td>V2</td>
+<td>2027-01 ~ 2027-03</td>
+<td>模块 7 + 提醒推送 + Web 只读</td>
+<td>D30 留存 ≥ 25%</td>
+</tr>
+<tr>
+<td>V3</td>
+<td>2027 上半年</td>
+<td>订阅会员 + 数据导出</td>
+<td>商业化验证</td>
+</tr>
+</tbody>
+</table>
+<h3 id="里程碑节点">7.2 里程碑节点</h3>
+<ul>
+<li><strong>M1 需求定稿</strong>（2026-09-15）：PRD 评审通过，spec
+拆解启动（模块 1~6 各生成一个 spec）</li>
+<li><strong>M2 核心模块完成</strong>（2026-11-15）：模块 1~4
+完成开发与测试（P1 全部）</li>
+<li><strong>M3 内测</strong>（2026-12-01）：内测范围 = 模块 1~6，目标
+200 名内测用户</li>
+<li><strong>M4 上线</strong>（2026-12-15）：App Store +
+各安卓商店首发</li>
+</ul>
+<hr />
+<h2 id="风险与依赖">8. 风险与依赖</h2>
+<h3 id="依赖">8.1 依赖</h3>
+<ul>
+<li>短信验证码服务商（登录）：需确认配额与费用。</li>
+<li>后端服务与数据存储（同步）：需后端团队排期，MVP
+依赖其基础能力。</li>
+<li>应用商店审核：首次提审周期不可控，预留 2 周缓冲。</li>
+</ul>
+<h3 id="风险清单">8.2 风险清单</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>风险</th>
+<th>影响</th>
+<th>概率</th>
+<th>应对措施</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自然语言日期解析准确率不达标</td>
+<td>核心路径（快速记录）体验崩坏</td>
+<td>中</td>
+<td>备选方案：提供日期快捷选择控件兜底</td>
+</tr>
+<tr>
+<td>同步冲突产生数据丢失</td>
+<td>信任崩塌</td>
+<td>低</td>
+<td>冲突规则先于开发冻结（后写覆盖），测试重点覆盖</td>
+</tr>
+<tr>
+<td>验证码服务商不可用</td>
+<td>登录不可用</td>
+<td>低</td>
+<td>预留备用服务商，登录失败有明确降级提示</td>
+</tr>
+<tr>
+<td>商店审核周期超预期</td>
+<td>上线延期</td>
+<td>中</td>
+<td>M4 前 2 周提审，功能冻结预留缓冲</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="验收与上线">9. 验收与上线</h2>
+<h3 id="验收方式">9.1 验收方式</h3>
+<ul>
+<li>功能级验收：模块 1~7 各自进入 Spec Kit 工作流生成 spec.md，按各 spec
+的验收场景验收（开发转测试用例，PM 依据同一场景确认）。</li>
+<li>产品级验收：PM 依据第 1.4
+节成功指标做整体确认（内测期验证首次记录耗时与任务完成率）。</li>
+</ul>
+<h3 id="上线计划">9.2 上线计划</h3>
+<ul>
+<li>灰度：商店正式发布 + 内测用户先行（TestFlight / 内测通道），观察 3
+天崩溃率与核心路径成功率。</li>
+<li>监控：冷启动耗时、task_created 事件量、崩溃率（目标 &lt;
+0.5%）、同步失败率。</li>
+<li>回滚：客户端采用服务端开关；若 task_create_duration 超阈值（&gt;
+15s）或崩溃率超标，关闭新版本入口，保留旧版本可用。</li>
+</ul>
+</body>
+</html>
