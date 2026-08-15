@@ -30,9 +30,9 @@ description: "Task list template for feature implementation"
 
 **Purpose**: 项目初始化与基础结构
 
-- [ ] T001 Create uv 项目骨架：`pyproject.toml`（Python 3.11+，`[project.scripts] recipe = "daily_recipe_cli.cli:main"`），运行 `uv init` + `uv sync`
-- [ ] T002 [P] Add pytest 开发依赖（`uv add --dev pytest`），创建 `tests/` 目录与最小冒烟测试
-- [ ] T003 [P] Create 包骨架 `src/daily_recipe_cli/__init__.py`（版本号）、`__main__.py`（`python -m` 入口），根目录 `CHANGELOG.md`
+- [x] T001 Create uv 项目骨架：`pyproject.toml`（Python 3.11+，`[project.scripts] recipe = "daily_recipe_cli.cli:main"`），运行 `uv init` + `uv sync`
+- [x] T002 [P] Add pytest 开发依赖（`uv add --dev pytest`），创建 `tests/` 目录与最小冒烟测试
+- [x] T003 [P] Create 包骨架 `src/daily_recipe_cli/__init__.py`（版本号）、`__main__.py`（`python -m` 入口），根目录 `CHANGELOG.md`
 
 ---
 
@@ -42,11 +42,11 @@ description: "Task list template for feature implementation"
 
 **⚠️ CRITICAL**: 本阶段完成前不得开始任何用户故事
 
-- [ ] T004 [P] [FND] Implement `src/daily_recipe_cli/storage.py`：数据目录解析（`RECIPE_CLI_DIR` 环境变量覆写，默认 `~/.daily-recipe-cli/`）、`recipes.json`/`history.json` 加载与原子写入（tmp + `os.replace`）
-- [ ] T005 [P] [FND] Implement `src/daily_recipe_cli/storage.py` 数据校验函数 `validate_recipe` / `validate_history`，按 `contracts/data-schema.md` 规则抛中文错误（含字段定位）
-- [ ] T006 [P] [FND] Create 初始食谱库 `src/daily_recipe_cli/data/default_recipes.json`（12~15 道「带饭友好」菜：菜名/主要食材/标签[荤素·快慢]/一句话做法）
-- [ ] T007 [FND] Implement 首次运行初始化：`recipes.json` 不存在时从包内 `default_recipes.json` 拷贝；`history.json` 不存在时创建空数组
-- [ ] T008 [FND] Write `tests/test_storage.py`：读写、原子性（写入失败不留半截文件）、非法数据中文报错、重名检测
+- [x] T004 [P] [FND] Implement `src/daily_recipe_cli/storage.py`：数据目录解析（`RECIPE_CLI_DIR` 环境变量覆写，默认 `~/.daily-recipe-cli/`）、`recipes.json`/`history.json` 加载与原子写入（tmp + `os.replace`）
+- [x] T005 [P] [FND] Implement `src/daily_recipe_cli/storage.py` 数据校验函数 `validate_recipe` / `validate_history`，按 `contracts/data-schema.md` 规则抛中文错误（含字段定位）
+- [x] T006 [P] [FND] Create 初始食谱库 `src/daily_recipe_cli/data/default_recipes.json`（12~15 道「带饭友好」菜：菜名/主要食材/标签[荤素·快慢]/一句话做法）
+- [x] T007 [FND] Implement 首次运行初始化：`recipes.json` 不存在时从包内 `default_recipes.json` 拷贝；`history.json` 不存在时创建空数组
+- [x] T008 [FND] Write `tests/test_storage.py`：读写、原子性（写入失败不留半截文件）、非法数据中文报错、重名检测
 
 **Checkpoint**: 数据层就绪，用户故事可开始
 

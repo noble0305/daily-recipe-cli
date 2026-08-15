@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+
+# 工具与系统
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# 测试缓存
+.pytest_cache/
+.coverage
