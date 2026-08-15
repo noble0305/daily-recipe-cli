@@ -7,3 +7,6 @@
 | 3 | 2026-08-15 | 实现今日推荐与历史记录（候选生成/确认/去重窗口/种子可复现） | 今日推荐 |
 | 4 | 2026-08-15 | 实现周规划（5 工作日、批内不重复、窗口放宽） | 周规划 |
 | 5 | 2026-08-15 | 实现食谱库管理与历史查看命令（add/list/remove/history） | 食谱库管理 |
+| 6 | 2026-08-15 | 新增 Spec Kit 开发工作流团队实践指南（docs/spec-kit-workflow.md + 分享用 HTML 版 + 侧边栏导航版 + bento 演示 deck） | 文档 |
+| 7 | 2026-08-15 | 新增 PM↔开发协作契约 SOP（docs/pm-dev-contract.md + PM 交付物模板 + 两份导航版 HTML） | 文档 |
+| 8 | 2026-08-15 | 新增完整 PRD 规格说明书模板与示例（docs/templates/prd-template.md + prd-example.md + 两份导航版 HTML） | 文档 |
