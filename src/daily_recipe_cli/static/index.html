@@ -98,6 +98,24 @@
     <div id="week-list"></div>
   </section>
 
+  <!-- 购物清单 -->
+  <section id="shopping-section">
+    <h2>购物清单</h2>
+    <div class="row">
+      <span class="muted">窗口</span>
+      <select id="shopping-days">
+        <option value="1">仅今日</option>
+        <option value="7" selected>未来 7 天</option>
+        <option value="3">未来 3 天</option>
+        <option value="14">未来 14 天</option>
+      </select>
+      <label class="muted" style="display:flex;align-items:center;gap:4px">
+        <input type="checkbox" id="shopping-merge" checked> 合并重复食材
+      </label>
+    </div>
+    <div id="shopping-list"></div>
+  </section>
+
   <!-- 历史 -->
   <section id="history-section">
     <h2>历史</h2>
@@ -142,6 +160,7 @@ async function loadState() {
   renderRecipes(d.recipes);
   loadHistory();
   loadWeekClean();
+  loadShoppingList();
 }
 function renderToday(t) {
   const el = $("today-status");
@@ -192,7 +211,7 @@ async function forceRecommend() {
 }
 async function confirmToday(choice) {
   const d = await api("POST", "/api/today", { action: "confirm", choice });
-  if (d) { renderToday({ decided: true, decidedRecipe: d.decidedRecipe, candidates: null }); loadHistory(); }
+  if (d) { renderToday({ decided: true, decidedRecipe: d.decidedRecipe, candidates: null }); loadHistory(); loadShoppingList(); }
 }
 $("btn-recommend").onclick = recommendToday;
 $("btn-force").onclick = forceRecommend;
@@ -265,6 +284,36 @@ async function weekConfirm() {
 $("btn-week-preview").onclick = weekPreviewGen;
 $("btn-week-confirm").onclick = weekConfirm;
 $("btn-week-cancel").onclick = loadWeekClean;
+
+async function loadShoppingList() {
+  const days = $("shopping-days").value;
+  const merge = $("shopping-merge").checked ? "true" : "false";
+  const d = await api("GET", "/api/shopping-list?days=" + days + "&merge=" + merge);
+  if (!d) return;
+  const el = $("shopping-list"); el.innerHTML = "";
+  if (d.empty) {
+    el.innerHTML = "<div class='muted'>未来 N 天暂无已安排的菜。先用「今日推荐」确定今天的菜，或生成下周计划。</div>";
+    return;
+  }
+  const hint = document.createElement("div");
+  hint.className = "muted"; hint.style.marginBottom = "8px";
+  hint.textContent = "共 " + d.items.length + " 项（未来 " + d.windowDays + " 天已安排菜的食材去重合并）";
+  el.appendChild(hint);
+  if (d.skippedRecipes.length) {
+    const skip = document.createElement("div");
+    skip.className = "muted"; skip.style.marginBottom = "8px";
+    skip.textContent = "已跳过（不在食谱库）：" + d.skippedRecipes.join("、");
+    el.appendChild(skip);
+  }
+  d.items.forEach(item => {
+    const row = document.createElement("div"); row.className = "card";
+    row.innerHTML = "<div><b>" + esc(item.ingredient) + "</b></div>" +
+      "<div class='meta'>" + esc(item.sources.join("、")) + "</div>";
+    el.appendChild(row);
+  });
+}
+$("shopping-days").onchange = loadShoppingList;
+$("shopping-merge").onchange = loadShoppingList;
 
 async function loadHistory() {
   const days = $("history-days").value;

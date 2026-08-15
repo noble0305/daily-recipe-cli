@@ -11,3 +11,4 @@
 | 7 | 2026-08-15 | 新增 PM↔开发协作契约 SOP（docs/pm-dev-contract.md + PM 交付物模板 + 两份导航版 HTML） | 文档 |
 | 8 | 2026-08-15 | 新增完整 PRD 规格说明书模板与示例（docs/templates/prd-template.md + prd-example.md + 两份导航版 HTML） | 文档 |
 | 9 | 2026-08-15 | 新增页面化访问：`recipe serve` 本地一次性服务，浏览器完成今日推荐/食谱库/周计划/历史全部操作（复用核心逻辑，仅标准库，关闭即退出） | 页面化访问 |
+| 10 | 2026-08-16 | 新增购物清单：`recipe shopping-list` 聚合未来 N 天已安排菜的食材，去重合并、按名称排序并标注来源；支持 `--today` / `--days` / `--no-merge`；`recipe serve` 页面同步新增「购物清单」区域（纯计算视图，不引入新数据文件） | 购物清单 |

@@ -256,9 +256,7 @@ def test_remove_missing_400(server_client, seeded_library):
 
 # ---------------------------------------------------------------------------
 # US3 周计划（T015）
-# ---------------------------------------------------------------------------
-
-def test_week_preview_returns_five_days(server_client, seeded_library):
+# ---------------------------------------------------------------------------def test_week_preview_returns_five_days(server_client, seeded_library):
     """preview：返回 5 个工作日、批内不重复、不写历史。"""
     status, body = server_client("POST", "/api/week", {"action": "preview"})
     assert status == 200
@@ -336,3 +334,92 @@ def test_history_days_param(server_client, seeded_library):
 
     status, body = server_client("GET", "/api/history?days=7")
     assert len(body["data"]["records"]) == 2
+
+
+# ---------------------------------------------------------------------------
+# US2b 购物清单（T008b）
+# ---------------------------------------------------------------------------
+
+def _future_entries(days_offsets: list[int], names: list[str]) -> list[dict]:
+    from datetime import timedelta
+    today = date.today()
+    return [
+        {"date": (today + timedelta(days=offset)).isoformat(), "recipe": name, "source": "today"}
+        for offset, name in zip(days_offsets, names)
+    ]
+
+
+def test_shopping_list_aggregates(server_client, seeded_library):
+    """GET /api/shopping-list：聚合去重、排序、来源标注、非空标记。"""
+    from daily_recipe_cli import storage
+    storage.save_json(storage.recipes_path(), seeded_library + [
+        {"name": "番茄炒蛋", "ingredients": ["番茄", "鸡蛋"], "tags": ["素", "快手"], "note": ""},
+    ])
+    storage.save_json(storage.history_path(), _future_entries([0, 1], ["番茄牛腩", "番茄炒蛋"]))
+
+    status, body = server_client("GET", "/api/shopping-list")
+    assert status == 200
+    data = body["data"]
+    assert data["empty"] is False
+    assert data["windowDays"] == 7
+    by_ing = {i["ingredient"]: i["sources"] for i in data["items"]}
+    assert set(by_ing) == {"牛腩", "番茄", "鸡蛋"}
+    assert by_ing["番茄"] == ["番茄牛腩", "番茄炒蛋"]
+    names = [i["ingredient"] for i in data["items"]]
+    assert names == sorted(names)
+
+
+def test_shopping_list_empty(server_client, seeded_library):
+    """无已安排记录：empty=true、items 为空。"""
+    status, body = server_client("GET", "/api/shopping-list")
+    assert status == 200
+    data = body["data"]
+    assert data["empty"] is True
+    assert data["items"] == []
+    assert data["skippedRecipes"] == []
+
+
+def test_shopping_list_days_param(server_client, seeded_library):
+    """days 参数生效：窗口缩短排除窗口外菜。"""
+    from daily_recipe_cli import storage
+    storage.save_json(storage.history_path(), _future_entries([0, 3], ["番茄牛腩", "番茄炒蛋"]))
+
+    status, body = server_client("GET", "/api/shopping-list?days=3")
+    assert status == 200
+    by_ing = {i["ingredient"] for i in body["data"]["items"]}
+    assert "鸡蛋" not in by_ing  # 第 3 天超出 3 天窗口（含今日为第 0..2）
+    assert "牛腩" in by_ing
+
+
+def test_shopping_list_merge_false(server_client, seeded_library):
+    """merge=false：同一食材按来源分别列出。"""
+    from daily_recipe_cli import storage
+    storage.save_json(storage.recipes_path(), seeded_library + [
+        {"name": "番茄炒蛋", "ingredients": ["番茄", "鸡蛋"], "tags": ["素", "快手"], "note": ""},
+    ])
+    storage.save_json(storage.history_path(), _future_entries([0, 1], ["番茄牛腩", "番茄炒蛋"]))
+
+    status, body = server_client("GET", "/api/shopping-list?merge=false")
+    assert status == 200
+    toms = [i for i in body["data"]["items"] if i["ingredient"] == "番茄"]
+    assert len(toms) == 2
+    assert [i["sources"] for i in toms] == [["番茄牛腩"], ["番茄炒蛋"]]
+
+
+def test_shopping_list_invalid_days_400(server_client, seeded_library):
+    """days 非正整数：400 中文错误。"""
+    status, body = server_client("GET", "/api/shopping-list?days=0")
+    assert status == 400
+    assert "正整数" in body["error"]
+
+
+def test_shopping_list_skipped_recipe(server_client, seeded_library):
+    """菜不在食谱库：跳过并列出，不影响其他菜。"""
+    from daily_recipe_cli import storage
+    storage.save_json(storage.history_path(), _future_entries([0, 1], ["番茄牛腩", "不存在的菜"]))
+
+    status, body = server_client("GET", "/api/shopping-list")
+    assert status == 200
+    assert "不存在的菜" in body["data"]["skippedRecipes"]
+    by_ing = {i["ingredient"] for i in body["data"]["items"]}
+    assert "牛腩" in by_ing
